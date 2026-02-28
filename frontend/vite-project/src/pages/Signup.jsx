@@ -1,24 +1,37 @@
 import {useContext, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
-import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
+// import axios from "axios";
+import {AuthContext} from "../context/AuthContext";
 
 function Signup() {
-    const [name , setName] = useState('');
-    const [email , setEmail] = useState('');
-    const [password , setPassword] = useState('');
-    const {signup}=useContext(AuthContext)
-    const navigate=useNavigate()
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const {signup} = useContext(AuthContext)
+    const navigate = useNavigate()
+
+    // const [error, setError] = useState('');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await signup({ username: name, email, password });
+        const result = await signup({username: name, email, password});
 
-        if (result.success) {
-        navigate("/"); 
+        if (!emailRegex.test(email)) {
+            // setError('enter a valid email address');
+            // console.log(error.msg);
+            // alert(error.msg);
+            return;
         } else {
-        alert(result.msg);
+            if (result.success) {
+                navigate("/");
+            } else {
+                alert(result.msg);
+            }
         }
+
+
     };
 
 
@@ -55,7 +68,6 @@ function Signup() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-
 
 
                     <div className="mb-3">

@@ -121,37 +121,45 @@
 import React, {useContext, useState} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from '../context/AuthContext';
+import {AuthContext} from '../context/AuthContext';
 
 function Login() {
 
-    const [email , setEmail] = useState('');
+    const [email, setEmail] = useState('');
     // const [email , setEmail] = useState('');
-    const [password , setPassword] = useState('');
-    const {login}=useContext(AuthContext)
-    const navigate=useNavigate()
+    const [password, setPassword] = useState('');
+    // const [error , setError] = useState('');
+
+    const {login} = useContext(AuthContext)
+    const navigate = useNavigate()
+
+    const emailRegex = /^[^\s@]+@admin\.com$/
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        const res = await axios.post("http://localhost:5000/api/auth/login", {
-            email,
-            password,
-        });
+            const res = await axios.post("http://localhost:5000/api/auth/login", {
+                email,
+                password,
+            });
 
-        login(res.data.token); 
-        navigate("/"); 
+            login(res.data.token);
+
+
+            if (emailRegex.test(email)) {
+                navigate("/dashboard");
+            } else {
+                navigate("/");
+            }
+
         } catch (err) {
-        console.log(err.response?.data || err.message);
-        alert(err.response?.data?.msg || "Login failed");
+            console.log(err.response?.data || err.message);
+            alert(err.response?.data?.msg || "Login failed");
         }
+
+
     };
-
-
-
-
-
-
 
 
     return (
@@ -187,7 +195,6 @@ function Login() {
                     {/*        onChange={(e) => setEmail(e.target.value)}*/}
                     {/*    />*/}
                     {/*</div>*/}
-
 
 
                     <div className="mb-3">

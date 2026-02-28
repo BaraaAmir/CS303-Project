@@ -39,6 +39,7 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto align-items-center">
             <li className="nav-item">
               <Link className="nav-link fw-semibold" to="/" onClick={() => setIsOpen(false)}>Home</Link>
+
             </li>
           {user?(
               <>

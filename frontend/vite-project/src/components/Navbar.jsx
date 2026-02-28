@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/LEARNOVA.png'; 
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
+  const [isOpen,setIsOpen]=useState(false)
+  const{user,logout}=useContext(AuthContext)
+
+  const toggleMenu=()=>{
+    setIsOpen(!isOpen)
+  }
+
+  const handleLogOut=()=>{
+    logout()
+    setIsOpen(false)
+  }
   return (
     <>
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -19,23 +31,38 @@ const Navbar = () => {
           <span style={{ color: '#C5A059' }}>OVA</span>
         </Link>
         
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button className="navbar-toggler" type="button" onClick={toggleMenu}>
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div className={`collapse navbar-collapse ${isOpen?'show':''}`} id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-center">
             <li className="nav-item">
-              <Link className="nav-link fw-semibold" to="/">Home</Link>
+              <Link className="nav-link fw-semibold" to="/" onClick={() => setIsOpen(false)}>Home</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link mx-lg-2 fw-semibold" to="/login">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="btn text-white px-4 rounded-pill shadow-sm" style={{backgroundColor: '#C5A059'}} to="/Register">
-                Sign Up
-              </Link>
-            </li>
+          {user?(
+              <>
+        <li className="nav-item">
+          <button 
+            className="btn btn-danger px-3 rounded-pill ms-2"
+            onClick={handleLogOut}
+          >
+            Logout
+          </button>
+        </li>
+        </>
+            ):(
+                    <>
+              <li className="nav-item">
+                <Link className="nav-link mx-lg-2 fw-semibold" to="/login" onClick={() => setIsOpen(false)}>Login</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="btn text-white px-4 rounded-pill shadow-sm" style={{backgroundColor: '#C5A059'}} to="/Register" onClick={() => setIsOpen(false)}>
+                  Sign Up
+                </Link>
+              </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

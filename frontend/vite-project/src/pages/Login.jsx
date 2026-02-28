@@ -118,22 +118,34 @@
 // export default Login;
 
 
-import React, {useState} from 'react'
-import {Link} from "react-router-dom";
+import React, {useContext, useState} from 'react'
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from '../context/AuthContext';
 
 function Login() {
 
-    const [name , setName] = useState('');
+    const [email , setEmail] = useState('');
     // const [email , setEmail] = useState('');
     const [password , setPassword] = useState('');
+    const {login}=useContext(AuthContext)
+    const navigate=useNavigate()
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        axios.post('' , {name ,password})
-            .then(result => console.log(result))
-            .catch(err => console.log(err));
-    }
+        try {
+        const res = await axios.post("http://localhost:5000/api/auth/login", {
+            email,
+            password,
+        });
+
+        login(res.data.token); 
+        navigate("/"); 
+        } catch (err) {
+        console.log(err.response?.data || err.message);
+        alert(err.response?.data?.msg || "Login failed");
+        }
+    };
 
 
 
@@ -157,8 +169,9 @@ function Login() {
                             autoComplete="off"
                             name="email"
                             className="form-control rounded-0"
-                            onChange={(e) => setName(e.target.value)}
-                            // onChange={(e) => setEmail(e.target.value)}
+                            required
+                            // onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     {/*<div className="mb-3">*/}
@@ -186,6 +199,7 @@ function Login() {
                             palceholder="Enter Password"
                             name="password"
                             className="form-control rounded-0"
+                            required
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>

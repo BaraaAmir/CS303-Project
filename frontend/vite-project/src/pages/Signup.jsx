@@ -1,18 +1,25 @@
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import {useContext, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 function Signup() {
     const [name , setName] = useState('');
     const [email , setEmail] = useState('');
     const [password , setPassword] = useState('');
+    const {signup}=useContext(AuthContext)
+    const navigate=useNavigate()
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        axios.post('' , {name ,email,password})
-        .then(result => console.log(result))
-            .catch(err => console.log(err));
-    }
+        const result = await signup({ username: name, email, password });
+
+        if (result.success) {
+        navigate("/"); 
+        } else {
+        alert(result.msg);
+        }
+    };
 
 
     return (
@@ -21,14 +28,15 @@ function Signup() {
                 <h2> Register</h2>
                 <form onSubmit={handleSubmit} className="p-4">
                     <div className="mb-3">
-                        <label htmlFor="email">
+                        <label htmlFor="name">
                             <strong>Name</strong>
                         </label>
                         <input
                             type="text"
                             placeholder="Enter Name"
                             autoComplete="off"
-                            name="email"
+                            name="username"
+                            required
                             className="form-control rounded-0"
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -42,6 +50,7 @@ function Signup() {
                             placeholder="Enter Name"
                             autoComplete="off"
                             name="email"
+                            required
                             className="form-control rounded-0"
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -57,6 +66,7 @@ function Signup() {
                             type="password"
                             palceholder="Enter Password"
                             name="password"
+                            required
                             className="form-control rounded-0"
                             onChange={(e) => setPassword(e.target.value)}
                         />

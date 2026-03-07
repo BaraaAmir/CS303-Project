@@ -15,6 +15,8 @@ const Navbar = () => {
     logout()
     setIsOpen(false)
   }
+
+  const isAdmin = user && user.role === 'admin';
   return (
     <>
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
@@ -43,6 +45,18 @@ const Navbar = () => {
             </li>
           {user?(
               <>
+        {isAdmin && (
+          <li className="nav-item">
+            <Link 
+              className="btn text-white px-3 rounded-pill me-2"
+              style={{backgroundColor: '#002147'}}
+              to="/admin-dashboard" 
+              onClick={() => setIsOpen(false)}
+            >
+              Admin Dashboard
+            </Link>
+          </li>
+        )}
         <li className="nav-item">
           <button 
             className="btn btn-danger px-3 rounded-pill ms-2"

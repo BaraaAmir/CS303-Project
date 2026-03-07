@@ -144,10 +144,12 @@ function Login() {
                 password,
             });
 
-            login(res.data.token);
+            login(res.data.token, res.data.user);
 
-
-            if (emailRegex.test(email)) {
+            // Check if user is admin based on role from response
+            if (res.data.user && res.data.user.role === 'admin') {
+                navigate("/admin-dashboard");
+            } else if (emailRegex.test(email)) {
                 navigate("/dashboard");
             } else {
                 navigate("/");

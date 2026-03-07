@@ -12,20 +12,29 @@ export const AuthProvider = ({children}) => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem("token")
-        if (token) {
-            setUser({token})
+        const token = localStorage.getItem("token");
+        const userData = localStorage.getItem("user");
+        if (token && userData) {
+            setUser({ token, ...JSON.parse(userData) });
+        } else if (token) {
+            setUser({ token });
         }
-        setLoading(false)
-    }, [])
+        setLoading(false);
+    }, []);
 
-    const login = (token) => {
-        localStorage.setItem("token", token)
-        setUser({token})
-    }
+    const login = (token, userData) => {
+        localStorage.setItem("token", token);
+        if (userData) {
+            localStorage.setItem("user", JSON.stringify(userData));
+            setUser({ token, ...userData });
+        } else {
+            setUser({ token });
+        }
+    };
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setUser(null);
     };
 
@@ -39,7 +48,7 @@ export const AuthProvider = ({children}) => {
         } else {
             try {
                 const res = await axios.post('http://localhost:5000/api/auth/register', {username, email, password})
-                login(res.data.token)
+                login(res.data.token, res.data.user)
                 return {success: true}
             } catch (err) {
                 console.log(err.response?.data || err.message);
